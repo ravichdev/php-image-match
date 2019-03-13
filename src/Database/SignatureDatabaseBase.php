@@ -1,5 +1,11 @@
 <?php
 
+namespace ImageMatch\Database;
+
+
+use ImageMatch\ImageSignature;
+use ImageMatch\Matrix;
+
 abstract class SignatureDatabaseBase
 {
 
@@ -8,6 +14,10 @@ abstract class SignatureDatabaseBase
     protected $N;
     protected $cropPercentile;
     protected $distanceCutoff;
+
+    abstract public function insert($record);
+
+    abstract public function search($record);
 
     public function __construct($k = 16, $N = 63, $nGrid = 9, $cropPercentile = [5,95], $distanceCutoff = 0.5)
     {
@@ -18,12 +28,27 @@ abstract class SignatureDatabaseBase
         $this->distanceCutoff = $distanceCutoff;
     }
 
-    abstract public function search();
-
-    abstract public function insert();
-
-    public function add($image, $metadata = [])
+    public function addImage($image, $metadata = [])
     {
+        $record = $this->makeRecord($image, $metadata);
+        return $this->insert($record);
+    }
+
+    public function searchImage($path, $allOrientations=false)
+    {
+        // var_dump($path);
+        // $image = ImageSignature::imageToColors($path, true);
+
+        if ($allOrientations) {
+            //TODO
+        }
+
+        $result = [];
+
+        $record = $this->makeRecord($path);
+        $result[] = $this->search($record);
+
+        return $result;
     }
 
     public function makeRecord($path, $metadata = [])

@@ -1,8 +1,6 @@
 <?php
 
-if (file_exists('./vendor/autoload.php')) {
-    require_once('./vendor/autoload.php');
-}
+namespace ImageMatch;
 
 use MathPHP\Functions\Map;
 
@@ -103,7 +101,7 @@ class Matrix
         $shape = self::shape($array);
 
         if (count($shape) === 1) {
-            return self::pair_diff($array);
+            return self::pairDiff($array);
         }
 
         if ($axis === false) {
@@ -121,13 +119,13 @@ class Matrix
         }
 
         for ($i = 0; $i < $length_of_arrays; $i++) {
-            $differences[] = self::pair_diff($array[$i]);
+            $differences[] = self::pairDiff($array[$i]);
         }
 
         return $differences;
     }
 
-    public static function pair_diff($array)
+    public static function pairDiff($array)
     {
         $diff = [];
         $length = count($array);
@@ -215,7 +213,7 @@ class Matrix
         return $percentile;
     }
 
-    public static function percentile_index($array, $percentile, $side = 'left')
+    public static function percentileIndex($array, $percentile, $side = 'left')
     {
         $perc = $percentile / 100 * count($array);
         return $side === 'left' ? floor($perc) : ceil($perc);
@@ -261,7 +259,7 @@ class Matrix
         }, array_slice($array, $rows[0], $rows[1] - $rows[0]));
     }
 
-    public static function flip_diagonally($arr)
+    public static function flipDiagonally($arr)
     {
         $out = array();
         foreach ($arr as $key => $subarr) {
@@ -408,7 +406,7 @@ class Matrix
         return $return;
     }
 
-    public static function dot_product($array1, $array2)
+    public static function dotProduct($array1, $array2)
     {
 
         $a_shape = self::shape($array1);

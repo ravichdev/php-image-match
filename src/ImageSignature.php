@@ -1,5 +1,7 @@
 <?php
 
+namespace ImageMatch;
+
 class ImageSignature
 {
 
@@ -54,12 +56,12 @@ class ImageSignature
                     [$lowerRowLimit, $upperRowLimit],
                     [$lowerRowLimit, $upperRowLimit]
                 ];
-            } else {
-                return [
-                    [$lowerColLimit, $upperColLimit],
-                    [$lowerColLimit, $upperColLimit]
-                ];
             }
+
+            return [
+                [$lowerColLimit, $upperColLimit],
+                [$lowerColLimit, $upperColLimit]
+            ];
         }
 
         // otherwise, proceed as normal
