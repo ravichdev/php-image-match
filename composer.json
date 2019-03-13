@@ -1,0 +1,13 @@
+{
+    "name": "ravi/image-match",
+    "require": {
+        "markrogoyski/math-php": "^0.49.0",
+        "elasticsearch/elasticsearch": "5.0"
+    },
+    "authors": [
+        {
+            "name": "Ravi Chandra",
+            "email": "ravichandrach1@gmail.com"
+        }
+    ]
+}
