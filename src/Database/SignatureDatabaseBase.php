@@ -2,7 +2,6 @@
 
 namespace ImageMatch\Database;
 
-
 use ImageMatch\ImageSignature;
 use ImageMatch\Matrix;
 
@@ -34,7 +33,7 @@ abstract class SignatureDatabaseBase
         return $this->insert($record);
     }
 
-    public function searchImage($path, $allOrientations=false)
+    public function searchImage($path, $allOrientations = false)
     {
         // var_dump($path);
         // $image = ImageSignature::imageToColors($path, true);
