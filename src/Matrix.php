@@ -60,13 +60,6 @@ class Matrix
         return $multiply;
     }
 
-    public static function sumall($array)
-    {
-        if (!is_array($array)) {
-            return $array;
-        }
-    }
-
     public static function cumsum($array)
     {
         $shape = self::shape($array);
@@ -88,12 +81,30 @@ class Matrix
         return $sum;
     }
 
-    public static function mean($array)
+    public static function subtract($array1, $array2)
     {
-        $shape = Matrix::shape($array);
-        $sum = Matrix::sum(Matrix::sum($array));
-        print_r(array_sum(Matrix::sum($grid))/($grid_shape[0]*$grid_shape[1]));
-        die();
+        $shape1 = self::shape($array1);
+        $shape2 = self::shape($array2);
+
+        if (count($shape1) !== 2) {
+            return $array1;
+        }
+
+        if (count($shape2) > 1 && $shape1[0] !== $shape2[0]) {
+            return $array1;
+        }
+
+        if (count($shape2) === 2 && $shape2[1] === 1) {
+            $array2 = array_unshift($array2);
+        }
+
+        $subtract = [];
+        $length_of_arrays = count($array1);
+
+        for ($i = 0; $i < $length_of_arrays; $i++) {
+            $subtract[] = Map\Multi::Subtract($array2, $array1[$i]);
+        }
+        return $subtract;
     }
 
     public static function diff($array, $axis = false)
@@ -430,5 +441,61 @@ class Matrix
         }
 
         return $matrix;
+    }
+
+    public static function rot90($array, $axis=1)
+    {
+        $shape = self::shape($array);
+        if (count($shape) !== 2) {
+            return $array;
+        }
+
+        $result = [];
+
+        if ($axis === 1) {
+            for ($i=$shape[1] - 1; $i >= 0; $i--) {
+                $result[$i] = array_column($array, $i);
+            }
+        } elseif ($axis === 2) {
+            $result = array_reverse(array_map('array_reverse', $array));
+        } elseif ($axis === 3) {
+            for ($i=0; $i < $shape[1]; $i++) {
+                $result[$i] = array_reverse(array_column($array, $i));
+            }
+        }
+
+        return empty( $result ) ? $array : $result;
+    }
+
+    public static function norm($array, $axis=1)
+    {
+        $shape = self::shape($array);
+        if (count($shape) === 1) {
+            /**
+             * The Euclidean Norm
+             * http://mathonline.wikidot.com/the-euclidean-norm
+             */
+            return sqrt(array_sum(array_map(function($v){ return abs($v) * abs($v); }, $array)));
+        }
+
+        if (count($shape) !== 2) {
+            return $array;
+        }
+
+        if ($axis === 1) {
+            $result = [];
+            for ($i = 0; $i < $shape[0]; $i++) {
+                $result[] = self::norm($array[$i]);
+            }
+            return $result;
+        }
+
+        if ($axis === 0) {
+            $result = [];
+            for ($i = 0; $i < $shape[1]; $i++) {
+                $result[] = self::norm(array_column($array, $i));
+            }
+            return $result;
+        }
     }
 }

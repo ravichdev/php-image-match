@@ -226,10 +226,12 @@ class ImageSignature
         return $masked;
     }
 
-    public static function generateSignature($path)
+    public static function generateSignature($path, $image)
     {
         # Step 1:    Load image as array of grey-levels
-        $image = self::imageToColors($path, true);
+        if (empty($image)) {
+            $image = self::imageToColors($path, true);
+        }
 
         # Step 2a:   Determine cropping boundaries
         $imageLimits = self::cropImage($image);

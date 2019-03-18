@@ -18,7 +18,7 @@ abstract class SignatureDatabaseBase
 
     abstract public function search($record);
 
-    public function __construct($k = 16, $N = 63, $nGrid = 9, $cropPercentile = [5,95], $distanceCutoff = 0.5)
+    public function __construct($k = 16, $N = 63, $nGrid = 9, $cropPercentile = [5,95], $distanceCutoff = 0.45)
     {
         $this->gis = new ImageSignature();
         $this->k = $k;
@@ -35,22 +35,43 @@ abstract class SignatureDatabaseBase
 
     public function searchImage($path, $allOrientations = false)
     {
-        // var_dump($path);
-        // $image = ImageSignature::imageToColors($path, true);
+        $image = ImageSignature::imageToColors($path, true);
+
+        $orientations = [
+            $image
+        ];
 
         if ($allOrientations) {
-            //TODO
+            foreach (range(1, 3) as $rotAxis) {
+                $orientations[] = Matrix::rot90($image, $rotAxis);
+            }
         }
 
-        $result = [];
+        $results = [];
 
-        $record = $this->makeRecord($path);
-        $result[] = $this->search($record);
+        foreach ($orientations as $img) {
+            $record = $this->makeRecord($path, $img);
+            $results = array_merge($results, $this->search($record));
+        }
 
-        return $result;
+        usort($results, function($a, $b) {
+            return $a['dist'] > $b['dist'] ? 1 : -1;
+        });
+
+        $ids = [];
+        $unique = [];
+
+        foreach ($results as $item) {
+            if (!isset($ids[$item['id']])) {
+                $ids[$item['id']] = true;
+                $unique[] = $item;
+            }
+        }
+
+        return $unique;
     }
 
-    public function makeRecord($path, $metadata = [])
+    public function makeRecord($path, $imageArray = null, $metadata = [])
     {
         $record = [
             'path' => $path
@@ -60,12 +81,13 @@ abstract class SignatureDatabaseBase
             $record['metadata'] = $metadata;
         }
 
-        $signature = ImageSignature::generateSignature($path);
+        $signature = ImageSignature::generateSignature($path, $imageArray);
+        $record['signature'] = $signature;
 
         $words = $this->getWords($signature, $this->k, $this->N);
         $words = $this->maxContrast($words);
         $words = $this->wordsToInt($words);
-        $record = [];
+
         for ($i = 0; $i < $this->N; $i++) {
             $record["simple_word_$i"] = $words[$i];
         }
@@ -111,5 +133,15 @@ abstract class SignatureDatabaseBase
             return $v + 1;
         });
         return Matrix::dotProduct($words, $codingVector);
+    }
+
+    public function normalizedDistance($targetArray, $vector)
+    {
+        $subtract = Matrix::subtract($targetArray, $vector);
+        $topVector = Matrix::norm($subtract);
+        $norm1 = Matrix::norm($vector, 0);
+        $norm2 = Matrix::norm($targetArray, 1);
+        $finVector = array_map(function($v1, $v2){ return $v1/$v2; }, $topVector, Matrix::sum([array_fill(0, count($norm2), $norm1), $norm2], 1));
+        return $finVector;
     }
 }
