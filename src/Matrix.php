@@ -19,7 +19,7 @@ class Matrix
         }
 
         $sum = [];
-        $length_of_arrays = count($array);
+        $lengthOfArrays = count($array);
 
         if ($axis === 0) {
             if (count($shape) > 2) {
@@ -38,7 +38,7 @@ class Matrix
             return array_sum($array);
         }
 
-        for ($i = 0; $i < $length_of_arrays; $i++) {
+        for ($i = 0; $i < $lengthOfArrays; $i++) {
             $sum[] = array_sum($array[$i]);
         }
 
@@ -52,8 +52,8 @@ class Matrix
         }
 
         $multiply = [];
-        $length_of_arrays = count($array);
-        for ($i = 0; $i < $length_of_arrays; $i++) {
+        $lengthOfArrays = count($array);
+        for ($i = 0; $i < $lengthOfArrays; $i++) {
             $multiply[] = self::multiply($array[$i], $number);
         }
 
@@ -64,17 +64,17 @@ class Matrix
     {
         $shape = self::shape($array);
         $sum = [];
-        $length_of_arrays = count($array);
+        $lengthOfArrays = count($array);
 
         if (! is_array(reset($array))) {
-            $arr_sum = [];
-            for ($i = 0; $i < $length_of_arrays; $i++) {
-                $arr_sum[] = ( $i === 0 ? 0 : $arr_sum[$i-1] ) + $array[$i];
+            $arrSum = [];
+            for ($i = 0; $i < $lengthOfArrays; $i++) {
+                $arrSum[] = ( $i === 0 ? 0 : $arrSum[$i-1] ) + $array[$i];
             }
-            return $arr_sum;
+            return $arrSum;
         }
 
-        for ($i = 0; $i < $length_of_arrays; $i++) {
+        for ($i = 0; $i < $lengthOfArrays; $i++) {
             $sum[] = self::cumsum($array[$i]);
             ;
         }
@@ -99,9 +99,9 @@ class Matrix
         }
 
         $subtract = [];
-        $length_of_arrays = count($array1);
+        $lengthOfArrays = count($array1);
 
-        for ($i = 0; $i < $length_of_arrays; $i++) {
+        for ($i = 0; $i < $lengthOfArrays; $i++) {
             $subtract[] = Map\Multi::Subtract($array2, $array1[$i]);
         }
         return $subtract;
@@ -120,16 +120,16 @@ class Matrix
         }
 
         $differences = [];
-        $length_of_arrays = count($array);
+        $lengthOfArrays = count($array);
 
         if ($axis === 0) {
-            for ($i = 0; $i < $length_of_arrays - 1; $i++) {
+            for ($i = 0; $i < $lengthOfArrays - 1; $i++) {
                 $differences[] = Map\Multi::subtract($array[$i+1], $array[$i]);
             }
             return $differences;
         }
 
-        for ($i = 0; $i < $length_of_arrays; $i++) {
+        for ($i = 0; $i < $lengthOfArrays; $i++) {
             $differences[] = self::pairDiff($array[$i]);
         }
 
@@ -305,13 +305,13 @@ class Matrix
         $row    = $j = 0;
         $return = [];
         $count  = count($array) + abs($k);
-        $r_add  = $k > 0 ? $k : 0;
-        $c_add  = $k < 0 ? abs($k) : 0;
+        $rAdd  = $k > 0 ? $k : 0;
+        $cAdd  = $k < 0 ? abs($k) : 0;
 
         for ($i=0; $i < $count; $i++) {
             $return[$i] = [];
             for ($j=0; $j < $count; $j++) {
-                if ($i+$r_add === $j+$c_add) {
+                if ($i+$rAdd === $j+$cAdd) {
                     $index = $k > 0 ? $i : $j;
                     $return[$i][$j] = isset($array[$index]) ? $array[$index] : 0;
                 } else {
@@ -326,9 +326,9 @@ class Matrix
     public static function fliplr($array, $level = 0)
     {
         $flipped = $level !== 0 ? array_reverse($array) : $array;
-        $length_of_arrays = count($flipped);
+        $lengthOfArrays = count($flipped);
 
-        for ($i = 0; $i < $length_of_arrays; $i++) {
+        for ($i = 0; $i < $lengthOfArrays; $i++) {
             if (is_array($flipped[$i])) {
                 $flipped[$i] = self::fliplr($flipped[$i], 1);
             }
@@ -364,8 +364,8 @@ class Matrix
         }
 
         $result = [];
-        $length_of_arrays = count($array);
-        for ($i = 0; $i < $length_of_arrays; $i++) {
+        $lengthOfArrays = count($array);
+        for ($i = 0; $i < $lengthOfArrays; $i++) {
             $result[] = self::map($array[$i], $callback);
         }
 
@@ -382,8 +382,8 @@ class Matrix
         }
 
         $result = [];
-        $length_of_arrays = count($array);
-        for ($i = 0; $i < $length_of_arrays; $i++) {
+        $lengthOfArrays = count($array);
+        for ($i = 0; $i < $lengthOfArrays; $i++) {
             $filtered = is_array($array[$i]) ? array_filter(self::filter($array[$i], $callback)) : self::filter($array[$i], $callback);
             if (!empty($filtered)) {
                 $result[] = $filtered;
@@ -420,15 +420,15 @@ class Matrix
     public static function dotProduct($array1, $array2)
     {
 
-        $a_shape = self::shape($array1);
-        $b_shape = self::shape($array2);
-        if (count($b_shape) > 1) {
-            return $a_shape;
+        $aShape = self::shape($array1);
+        $bShape = self::shape($array2);
+        if (count($bShape) > 1) {
+            return $array1;
         }
 
         $matrix = [];
 
-        for ($i = 0; $i < reset($a_shape); $i++) {
+        for ($i = 0; $i < reset($aShape); $i++) {
             $matrix[$i] = [];
 
             $matrix[$i] = array_sum(array_map(
@@ -443,7 +443,7 @@ class Matrix
         return $matrix;
     }
 
-    public static function rot90($array, $axis=1)
+    public static function rot90($array, $axis = 1)
     {
         $shape = self::shape($array);
         if (count($shape) !== 2) {
@@ -464,10 +464,10 @@ class Matrix
             }
         }
 
-        return empty( $result ) ? $array : $result;
+        return empty($result) ? $array : $result;
     }
 
-    public static function norm($array, $axis=1)
+    public static function norm($array, $axis = 1)
     {
         $shape = self::shape($array);
         if (count($shape) === 1) {
@@ -475,7 +475,9 @@ class Matrix
              * The Euclidean Norm
              * http://mathonline.wikidot.com/the-euclidean-norm
              */
-            return sqrt(array_sum(array_map(function($v){ return abs($v) * abs($v); }, $array)));
+            return sqrt(array_sum(array_map(function ($v) {
+                return abs($v) * abs($v);
+            }, $array)));
         }
 
         if (count($shape) !== 2) {

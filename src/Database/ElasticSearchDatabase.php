@@ -60,7 +60,9 @@ class ElasticSearchDatabase extends SignatureDatabaseBase
 
         $hits = empty($results['hits']) ? [] : $results['hits']['hits'];
 
-        $signatures = array_map(function($hit){ return $hit['_source']['signature']; }, $hits);
+        $signatures = array_map(function ($hit) {
+            return $hit['_source']['signature'];
+        }, $hits);
 
         if (count($signatures) === 0) {
             return [];
@@ -79,6 +81,8 @@ class ElasticSearchDatabase extends SignatureDatabaseBase
             ];
         }
 
-        return array_filter($results, function($y) { return $y['dist'] > $this->distanceCutoff; });
+        return array_filter($results, function ($y) {
+            return $y['dist'] > $this->distanceCutoff;
+        });
     }
 }
