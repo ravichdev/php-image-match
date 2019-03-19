@@ -7,8 +7,6 @@ use ImageMatch\Matrix;
 
 abstract class SignatureDatabaseBase
 {
-
-    protected $gis;
     protected $k;
     protected $N;
     protected $cropPercentile;
@@ -20,7 +18,6 @@ abstract class SignatureDatabaseBase
 
     public function __construct($k = 16, $N = 63, $nGrid = 9, $cropPercentile = [5,95], $distanceCutoff = 0.45)
     {
-        $this->gis = new ImageSignature();
         $this->k = $k;
         $this->N = $N;
         $this->cropPercentile = $cropPercentile;
