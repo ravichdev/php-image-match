@@ -79,6 +79,6 @@ class ElasticSearchDatabase extends SignatureDatabaseBase
             ];
         }
 
-        return array_filter($results, function($y) { return $y['dist'] < $this->distanceCutoff; });
+        return array_filter($results, function($y) { return $y['dist'] > $this->distanceCutoff; });
     }
 }

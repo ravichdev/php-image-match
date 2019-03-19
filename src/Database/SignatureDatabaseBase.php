@@ -55,7 +55,7 @@ abstract class SignatureDatabaseBase
         }
 
         usort($results, function($a, $b) {
-            return $a['dist'] > $b['dist'] ? 1 : -1;
+            return $a['dist'] < $b['dist'] ? 1 : -1;
         });
 
         $ids = [];
@@ -141,7 +141,7 @@ abstract class SignatureDatabaseBase
         $topVector = Matrix::norm($subtract);
         $norm1 = Matrix::norm($vector, 0);
         $norm2 = Matrix::norm($targetArray, 1);
-        $finVector = array_map(function($v1, $v2){ return $v1/$v2; }, $topVector, Matrix::sum([array_fill(0, count($norm2), $norm1), $norm2], 1));
+        $finVector = array_map(function($v1, $v2){ return 100 - $v1/$v2; }, $topVector, Matrix::sum([array_fill(0, count($norm2), $norm1), $norm2], 1));
         return $finVector;
     }
 }
