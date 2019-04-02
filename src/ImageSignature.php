@@ -106,7 +106,7 @@ class ImageSignature
 
                 $grid = Matrix::slice($image, [$lowerXLim, $upperXLim], [$lowerYLim, $upperYLim]);
                 $gridShape = Matrix::shape($grid);
-                $avgGrey[$i][$j] = array_sum(Matrix::sum($grid))/($gridShape[0]*$gridShape[1]);
+                $avgGrey[$i][$j] = array_sum(Matrix::sum($grid, 1))/($gridShape[0]*$gridShape[1]);
             }
         }
 

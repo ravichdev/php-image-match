@@ -6,7 +6,30 @@ use MathPHP\Functions\Map;
 
 class Matrix
 {
+    /**
+     * Calculate the shape of an array
+     *
+     * @param array   $array
+     * @param array   $shape
+     * @return array
+     */
+    public static function shape($array, &$shape = [])
+    {
+        if (is_array($array)) {
+            $shape[] = count($array);
+            self::shape(array_shift($array), $shape);
+        }
 
+        return $shape;
+    }
+
+    /**
+     * Sum of array elements over a given axis
+     *
+     * @param array $array Elements to sum
+     * @param mixed $axis Default is false, 0 will sum columns and 1 will sum rows
+     * @return int|array
+     */
     public static function sum($array, $axis = false)
     {
         if (!is_array($array)) {
@@ -14,8 +37,13 @@ class Matrix
         }
 
         $shape = self::shape($array);
+
+        if (count($shape) <= 1) {
+            return $array;
+        }
+
         if ($axis === false) {
-            $axis = end($shape);
+            return array_sum(Matrix::flatten($array));
         }
 
         $sum = [];
@@ -34,8 +62,15 @@ class Matrix
             return Map\Multi::add(...$array);
         }
 
-        if (! is_array(reset($array))) {
+        if (!is_array(reset($array))) {
             return array_sum($array);
+        }
+
+        if (count($shape) > 2) {
+            for ($i = 0; $i < $shape[0]; $i++) {
+                $sum[] = self::sum($array[$i], 0);
+            }
+            return $sum;
         }
 
         for ($i = 0; $i < $lengthOfArrays; $i++) {
@@ -45,6 +80,13 @@ class Matrix
         return $sum;
     }
 
+    /**
+     * Multiply each element in an array with a given number
+     *
+     * @param array $array
+     * @param int $number
+     * @return array
+     */
     public static function multiply($array, $number)
     {
         if (!is_array($array)) {
@@ -60,6 +102,12 @@ class Matrix
         return $multiply;
     }
 
+    /**
+     * Return the cumulative sum of elements in each row
+     *
+     * @param array $array
+     * @return array
+     */
     public static function cumsum($array)
     {
         $shape = self::shape($array);
@@ -76,11 +124,17 @@ class Matrix
 
         for ($i = 0; $i < $lengthOfArrays; $i++) {
             $sum[] = self::cumsum($array[$i]);
-            ;
         }
         return $sum;
     }
 
+    /**
+     * Subtract each element in array1 from array2, array2 should only be a 1d array
+     *
+     * @param array $array1
+     * @param array $array2
+     * @return array
+     */
     public static function subtract($array1, $array2)
     {
         $shape1 = self::shape($array1);
@@ -90,7 +144,7 @@ class Matrix
             return $array1;
         }
 
-        if (count($shape2) > 1 && $shape1[0] !== $shape2[0]) {
+        if (count($shape2) > 1) {
             return $array1;
         }
 
@@ -102,7 +156,7 @@ class Matrix
         $lengthOfArrays = count($array1);
 
         for ($i = 0; $i < $lengthOfArrays; $i++) {
-            $subtract[] = Map\Multi::Subtract($array2, $array1[$i]);
+            $subtract[] = Map\Multi::subtract($array2, $array1[$i]);
         }
         return $subtract;
     }
@@ -181,23 +235,6 @@ class Matrix
         }
 
         return $array1;
-    }
-
-    /**
-     * Calculate the shape of an array
-     *
-     * @param array   $array
-     * @param array   $shape
-     * @return array
-     */
-    public static function shape($array, &$shape = [])
-    {
-        if (is_array($array)) {
-            $shape[] = count($array);
-            self::shape(array_shift($array), $shape);
-        }
-
-        return $shape;
     }
 
     public static function percentile($array, $percentile)
