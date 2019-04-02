@@ -21,6 +21,7 @@ use Elasticsearch\ClientBuilder;
 use ImageMatch\Database\ElasticSearchDatabase;
 
 $builder = ClientBuilder::create();
+// You have a elasticsearch instance with hostname `elasticsearch` and port 9000
 $builder->setHosts(['elasticsearch']);
 $client = $builder->build();
 
@@ -38,6 +39,7 @@ use Elasticsearch\ClientBuilder;
 use ImageMatch\Database\ElasticSearchDatabase;
 
 $builder = ClientBuilder::create();
+// You have a elasticsearch instance with hostname `elasticsearch` and port 9000
 $builder->setHosts(['elasticsearch']);
 $client = $builder->build();
 
