@@ -1,5 +1,5 @@
 {
-    "name": "ravi/image-match",
+    "name": "ravichdev/image-match",
     "require": {
         "elasticsearch/elasticsearch": "6.7.x",
         "markrogoyski/math-php": "^0.49.0"
@@ -10,7 +10,7 @@
         "phpstan/phpstan": "*",
         "phpmd/phpmd": "^2.6",
         "phploc/phploc": "*",
-        "squizlabs/php_codesniffer": "3.0.2"
+        "squizlabs/php_codesniffer": "3.5.3"
     },
     "autoload": {
         "psr-4": {
