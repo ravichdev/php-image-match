@@ -1,7 +1,7 @@
 {
     "name": "ravi/image-match",
     "require": {
-        "elasticsearch/elasticsearch": "5.0",
+        "elasticsearch/elasticsearch": "6.7.x",
         "markrogoyski/math-php": "^0.49.0"
     },
     "require-dev": {

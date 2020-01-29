@@ -14,7 +14,6 @@ class ImageSignature
 
         for ($y = 0; $y < $height; $y++) {
             for ($x = 0; $x < $width; $x++) {
-                $rgb = imagecolorat($image, $x, $y);
                 $rgba = imagecolorsforindex($image, imagecolorat($image, $x, $y));
 
                 $colors[$y][$x] = $rgba;

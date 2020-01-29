@@ -34,11 +34,7 @@ class ElasticSearchDatabase extends SignatureDatabaseBase
     public function search($record)
     {
         $signature = $record['signature'];
-        foreach (['path', 'signature', 'metadata'] as $field) {
-            if (isset($record[$field])) {
-                unset($record[$field]);
-            }
-        }
+        $record = $this->cleanRecord($record);
 
         $should = [];
         foreach ($record as $word => $value) {
@@ -54,7 +50,7 @@ class ElasticSearchDatabase extends SignatureDatabaseBase
                         'should' => $should
                     ]
                 ],
-                '_source' => ['excludes' => ['simple_word_*']]
+                '_source' => ['excludes' => ['sig_*']]
             ]
         ]);
 

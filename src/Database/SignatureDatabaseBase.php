@@ -26,7 +26,7 @@ abstract class SignatureDatabaseBase
 
     public function addImage($image, $metadata = [])
     {
-        $record = $this->makeRecord($image, $metadata);
+        $record = $this->makeRecord($image, null, $metadata);
         return $this->insert($record);
     }
 
@@ -86,7 +86,7 @@ abstract class SignatureDatabaseBase
         $words = $this->wordsToInt($words);
 
         for ($i = 0; $i < $this->N; $i++) {
-            $record["simple_word_$i"] = $words[$i];
+            $record["sig_$i"] = $words[$i];
         }
 
         return $record;
@@ -142,5 +142,16 @@ abstract class SignatureDatabaseBase
             return $v1/$v2;
         }, $topVector, Matrix::sum([array_fill(0, count($norm2), $norm1), $norm2], 1));
         return $finVector;
+    }
+
+    public function cleanRecord($record)
+    {
+        foreach (['path', 'signature', 'metadata'] as $field) {
+            if (isset($record[$field])) {
+                unset($record[$field]);
+            }
+        }
+
+        return $record;
     }
 }
